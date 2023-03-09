@@ -84,7 +84,7 @@ pub const HeaderType = enum {
             return false;
         }
 
-        for (value) |char, i| {
+        for (value, 0..) |char, i| {
             if (HEADER_NAME_MAP[char] != lowered[i]) {
                 return false;
             }

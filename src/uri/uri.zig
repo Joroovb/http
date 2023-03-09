@@ -71,7 +71,7 @@ pub const Uri = struct {
         errdefer map.deinit();
         var start: u32 = 0;
         var mid: u32 = 0;
-        for (query) |c, i| {
+        for (query, 0..) |c, i| {
             if (c == ';' or c == '&') {
                 if (mid != 0) {
                     _ = try map.put(query[start..mid], query[mid + 1 .. i]);
@@ -133,7 +133,7 @@ pub const Uri = struct {
     pub fn encode(allocator: Allocator, path: []const u8) EncodeError!?[]u8 {
         var ret: ?[]u8 = null;
         var ret_index: usize = 0;
-        for (path) |c, i| {
+        for (path, 0..) |c, i| {
             if (c != '/' and !isPchar(path[i..])) {
                 if (ret == null) {
                     ret = try allocator.alloc(u8, path.len * 3);
@@ -251,7 +251,7 @@ pub const Uri = struct {
     }
 
     fn parseMaybeScheme(u: *Uri, input: []const u8) void {
-        for (input) |c, i| {
+        for (input, 0..) |c, i| {
             switch (c) {
                 'a'...'z', 'A'...'Z', '0'...'9', '+', '-', '.' => {
                     // allowed characters
@@ -271,7 +271,7 @@ pub const Uri = struct {
     }
 
     fn parseAuth(u: *Uri, input: []const u8) Error!void {
-        for (input) |c, i| {
+        for (input, 0..) |c, i| {
             switch (c) {
                 '@' => {
                     u.username = input[0..i];
@@ -305,7 +305,7 @@ pub const Uri = struct {
     }
 
     fn parseAuthColon(u: *Uri, input: []const u8) Error!void {
-        for (input) |c, i| {
+        for (input, 0..) |c, i| {
             if (c == '@') {
                 u.username = u.host.name;
                 u.password = input[0..i];
@@ -322,7 +322,7 @@ pub const Uri = struct {
     }
 
     fn parseHost(u: *Uri, input: []const u8) Error!void {
-        for (input) |c, i| {
+        for (input, 0..) |c, i| {
             switch (c) {
                 ':' => {
                     u.host.name = input[0..i];
@@ -358,7 +358,7 @@ pub const Uri = struct {
     }
 
     fn parsePort(u: *Uri, input: []const u8) Error!void {
-        for (input) |c, i| {
+        for (input, 0..) |c, i| {
             switch (c) {
                 '0'...'9' => {
                     // digits
@@ -377,7 +377,7 @@ pub const Uri = struct {
     }
 
     fn parsePath(u: *Uri, input: []const u8) void {
-        for (input) |c, i| {
+        for (input, 0..) |c, i| {
             if (c != '/' and (c == '?' or c == '#' or !isPchar(input[i..]))) {
                 u.path = input[0..i];
                 u.len += u.path.len;
@@ -390,7 +390,7 @@ pub const Uri = struct {
 
     fn parseQuery(u: *Uri, input: []const u8) void {
         u.len += 1; // +1 for the '?'
-        for (input) |c, i| {
+        for (input, 0..) |c, i| {
             if (c == '#' or (c != '/' and c != '?' and !isPchar(input[i..]))) {
                 u.query = input[0..i];
                 u.len += u.query.len;
@@ -403,7 +403,7 @@ pub const Uri = struct {
 
     fn parseFragment(u: *Uri, input: []const u8) void {
         u.len += 1; // +1 for the '#'
-        for (input) |c, i| {
+        for (input, 0..) |c, i| {
             if (c != '/' and c != '?' and !isPchar(input[i..])) {
                 u.fragment = input[0..i];
                 u.len += u.fragment.len;
