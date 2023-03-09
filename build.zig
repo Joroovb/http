@@ -15,7 +15,7 @@ pub fn build(b: *std.Build) void {
 
 fn tests(b: *std.Build, target: std.zig.CrossTarget, mode: std.builtin.OptimizeMode) void {
     const main_tests = b.addTest(.{
-        .root_source_file = .{ .path = "src/main.zig" },
+        .root_source_file = .{ .path = "src/test.zig" },
         .target = target,
         .optimize = mode,
     });
@@ -29,8 +29,6 @@ fn clean(b: *std.Build) void {
         "rm",
         "-rf",
         "zig-out",
-        "http.o",
-        "http.o.o",
         "zig-cache",
     });
 
