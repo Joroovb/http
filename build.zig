@@ -6,9 +6,7 @@ pub fn build(b: *std.Build) void {
 
     _ = b.addModule(.{
         .name = "http",
-        .root_source_file = .{ .path = "src/main.zig" },
-        .target = target,
-        .optimize = optimize,
+        .source_file = .{ .path = "src/main.zig" },
     });
 
     const lib = b.addStaticLibrary(.{
